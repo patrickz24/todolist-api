@@ -1,28 +1,30 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('TodoItems', {
       id: {
-        primaryKey: true,
         allowNull: false,
+    
+        primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      first_name: {
-        allowNull: false,
-        type: Sequelize.STRING(50),
+      text: {
+        type: Sequelize.STRING
       },
-      last_name: {
+      todoId: {
         allowNull: false,
-        type: Sequelize.STRING(50),
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        primaryKey: true,
+        references: {
+          model: 'Todos',
+          key: 'id'
+       
+        },
       },
-      email: {
-        allowNull: false,
-        type: Sequelize.STRING(255),
-      },
-      password: {
-        allowNull: false,
-        type: Sequelize.STRING(255),
+      isCompleted: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,
@@ -35,6 +37,6 @@ module.exports = {
     });
   },
   down: async (queryInterface) => {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('TodoItems');
   }
 };
