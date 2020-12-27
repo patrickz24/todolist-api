@@ -4,15 +4,15 @@ module.exports = (sequelize, DataTypes) => {
   class TodoItem extends Model {
    
     static associate(models) {
-      this.belongsTo(models.Todo, {
-    
-        foreignKey: 'todoId',
+      TodoItem.belongsTo(models.Todo, {
+        as: 'todo',
+        foreignKey: 'todoId'
       });
-    
+    };
  
-    }
-  };
-  Todo.init({   
+  }
+  
+  TodoItem.init({   
       id: {
     type: DataTypes.UUID,
     primaryKey: true,
@@ -23,8 +23,19 @@ module.exports = (sequelize, DataTypes) => {
       isUUID: 4,
     },
   },
+  todoId: {
+    type: DataTypes.UUID,
+    primaryKey: true,
+    allowNull: false,
+    defaultValue: DataTypes.UUIDV4,
+    validate: {
+      notNull: true,
+      isUUID: 4,
+    },
+  },
  
-    title: DataTypes.STRING,
+    text: DataTypes.STRING,
+    isCompleted: DataTypes.BOOLEAN
  
   }, {
     sequelize,

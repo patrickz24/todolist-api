@@ -1,36 +1,33 @@
 'use strict';
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Todos', {
+    up: (queryInterface, Sequelize) => queryInterface.createTable('TodoItems', {
       id: {
         allowNull: false,
-    
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      title: {
+      text: {
         type: Sequelize.STRING
       },
-      userId: {
+      todoId: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         allowNull: false,
-     
+       
       },
-      
+      isCompleted: {
+        type: Sequelize.BOOLEAN,
+      },
       createdAt: {
-        timestamps: false,
         allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-      },
-    });
-  },
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Todos');
-  },
-};
+        type: Sequelize.DATE
+      }
+    }),
+    down: (queryInterface, Sequelize) => queryInterface.dropTable('TodoItems')
+  };
+  
