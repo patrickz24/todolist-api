@@ -5,13 +5,14 @@ module.exports = (sequelize, DataTypes) => {
    
     static associate(models) {
       this.belongsTo(models.User, {
-       as :'todos',
-        foreignKey: "userId",
+    
+        foreignKey: 'userId',
       });
-      this.hasMany(models.TodoItem, {
-        as:'todoItems',
+      this.hasMany(models.Todo, {
+      
         foreignKey: "todoId",
       });
+ 
     }
   };
   Todo.init({   
