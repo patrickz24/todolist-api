@@ -18,7 +18,7 @@ const FIRSTNAME_REGEX = /^[a-zA-Z]{1,}$/;
 module.exports = {
   signup: async function (req, res) {
     console.log("caca");
-    const { first_name, last_name, email, password , isAdmin} = req.body;
+    const { first_name, last_name, email, password} = req.body;
 
     if (first_name === "" || last_name === "") {
       throw new BadRequestError(
@@ -40,20 +40,22 @@ module.exports = {
         "Mot de passe invalide (doit avoir une longueur de 4 à 8 caractères et inclure au moins un chiffre), veuillez recommencer."
       );
     }
+    console.log("capasse par la!");
 
-    const userFound = await models.Users.findOne({
+    const userFound = await models.User.findOne({
+     
       attributes: ["email"],
       where: { email: email },
     });
-
+    console.log("capasse par la!");
     if (!userFound) {
       bcrypt.hash(password, 5, async (err, bcryptedPassword) => {
-        const newUser = await models.Users.create({
+        const newUser = await models.User.create({
           first_name: first_name,
           last_name: last_name,
           email: email,
           password: bcryptedPassword,
-          isAdmin,
+       
         });
         if (!newUser) {
           throw new ServerError(
@@ -65,7 +67,7 @@ module.exports = {
             first_name: newUser.first_name,
             last_name: newUser.last_name,
             email: newUser.email,
-            isAdmin:newUser.isAdmin,
+          
           });
         }
       });
@@ -86,7 +88,7 @@ module.exports = {
         "Les champs e-mail et/ou mot de passes sont manquants, veuillez recommencer."
       );
     }
-    const userFound = await models.Users.findOne({
+    const userFound = await models.User.findOne({
       where: { email: email },
     });
     if (!userFound) {
@@ -110,14 +112,13 @@ module.exports = {
         first_name: userFound.first_name,
         last_name: userFound.last_name,
         email: userFound.email,
-        isAdmin: userFound.isAdmin,
-      },
+              },
       token: jwtUtils.generateTokenForUser(userFound),
     });
   },
   getOneUser: async (req, res) => {
     const userId = req.params.id;
-    const findUser = await models.Users.findOne({
+    const findUser = await models.User.findOne({
       where: { id: userId },
       raw: true,
       attributes: ["first_name", "last_name", "email"],
@@ -158,7 +159,7 @@ module.exports = {
 
       const newData = req.body;
       newData.id = userId;
-      await models.Users.update(newData, {
+      await models.User.update(newData, {
         where: { id: userId },
         raw: true,
         attributes: ["first_name", "last_name", "email", "password"],
@@ -172,7 +173,7 @@ module.exports = {
   getDeleteUser: async function (req, res) {
     const id = req.params.id;
 
-    const deleted = await models.Users.destroy({
+    const deleted = await models.User.destroy({
       where: { id: id},
     });
     if (deleted) {

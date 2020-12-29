@@ -1,30 +1,51 @@
-const models = require("../database/models");;
-module.exports = {
+const express = require("express");
+require("express-async-errors");
+const models = require("../database/models");
 
-  async create({ body, decoded }, res, next) {
-    try {
-      const { title } = body;
-      const { userId } = decoded;
-      const todo = await Todo.create({ title, userId });
-      return res.status(201).send(todo);
-    } catch (e) {
-      return next(new Error(e));
+
+const { OK, CREATED} = require("../helpers/status_codes");
+const { BadRequestError}= require("../helpers/errors");
+
+module.exports = {
+  addTodo: async function (req, res) {
+
+console.log("addTodo");
+    const { title} = req.body;
+    const userId = req.userId;
+
+    if (
+      (title === "")
+    ) {
+      throw new BadRequestError(
+        "Mauvaise Requête",
+        "Le champ description n'est pas renseigné, veuillez recommencer."
+      );
     }
+    console.log("adddddddd");
+    const user = await models.User.findByPk(userId);
+    console.log("adddddddd");
+    const todos = await models.Todo.create({
+      userId: user.id,
+     title,
+  
+    });
+
+    return res.status(OK).json(todos);
   },
 
-  async fetchAll({ decoded }, res, next) {
-    try {
-      const myTodos = await models.Todo.findAll({
-        where: { userId: decoded.userId },
-        include: [{
-          model: TodoItem,
-          as: 'todoItems'
-        }],
-      });
-      return res.status(200).send(myTodos);
-    } catch (e) {
-      return next(new Error(e));
-    }
+
+  getAllTodos: async function (req, res) {  
+    console.log(req.userId);
+  
+    const userId = req.userId;
+    const user = await models.User.findByPk(userId);
+ user.id = id;
+    const findTodo = await models.Todo.findAll({
+      where: { userId: req.userId },
+  
+    });
+   
+    return res.status(OK).json(findTodo);
   },
 
   async fetchOne({ params, decoded }, res, next) {

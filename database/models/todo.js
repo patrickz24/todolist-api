@@ -5,11 +5,13 @@ module.exports = (sequelize, DataTypes) => {
    
     static associate(models) {
       
-      Todo.belongsTo(models.User, {
-        as: 'user',
-        foreignKey: 'userId'
+      this.belongsToMany(models.User, {
+        through: 'UserTodo',
+        foreignKey: 'userId',
+        as: 'users',
+       
       });
-      Todo.hasMany(models.TodoItem, {
+      this.hasMany(models.TodoItem, {
         as: 'todoItems',
         foreignKey: 'todoId'
       });
@@ -27,16 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       isUUID: 4,
     },
   },
-  userId: {
-    type: DataTypes.UUID,
-    primaryKey: true,
-    allowNull: false,
-    defaultValue: DataTypes.UUIDV4,
-    validate: {
-      notNull: true,
-      isUUID: 4,
-    },
-  },
+  
     title: DataTypes.STRING,
  
   }, {

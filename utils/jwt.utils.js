@@ -13,10 +13,10 @@ const parseAuthorization=  (authorization)=> {
     return token;
 }
 module.exports = {
-  generateTokenForUser: function (id, email) {
+  generateTokenForUser: function (userData) {
     return jwt.sign(
       {
-     userId: id, email 
+        userId: userData.id,
       
       },
       JWT_SIGN_SECRET,

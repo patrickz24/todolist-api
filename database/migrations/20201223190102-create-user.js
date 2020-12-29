@@ -8,11 +8,12 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      firstName: {
+      
+      first_name: {
         allowNull: false,
         type: Sequelize.STRING(50),
       },
-      lastName: {
+      last_name: {
         allowNull: false,
         type: Sequelize.STRING(50),
       },

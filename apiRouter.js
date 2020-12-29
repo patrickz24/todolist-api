@@ -1,7 +1,7 @@
 const express = require("express");
 require("express-async-errors");
 const userCtrl = require("./controlleurs/userCtrl");
-const todosCtrl = require("./controlleurs/todosCtrl");
+const todosCtrl = require("./controlleurs/todoCtrl");
 
 // const sendMailCtrl = require("./controlleurs/sendMailCtrl");
 const models= require("./database/models")
@@ -22,8 +22,8 @@ apiRouter.route("/user/:id").get(userCtrl.getOneUser);
 apiRouter.route("/user/:id").put(userCtrl.getUpdateUser);
 apiRouter.route("/user/:id").delete(userCtrl.getDeleteUser);
 
-apiRouter.route('/todos').post(authentification, todosCtrl.create);
-apiRouter.route('/todos').get(authentification, todosCtrl.fetchAll);
+apiRouter.route('/todos').post(authentification, todosCtrl.addTodo);
+apiRouter.route('/todos').get(authentification, todosCtrl.getAllTodos);
 apiRouter.route('/todos/:todoId').get(authentification, todosCtrl.fetchOne);
 apiRouter.route('/todos/:todoId').put(authentification, todosCtrl.update);
 apiRouter.route('/todos/:todoId').delete(authentification, todosCtrl.delete);
