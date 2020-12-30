@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(models.Todo, {
         through: 'UserTodos',
         foreignKey: 'todoId',
+        otherKey: 'userId',
         as: 'todos',
       });
     }

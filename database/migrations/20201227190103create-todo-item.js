@@ -10,12 +10,7 @@ module.exports = {
       text: {
         type: Sequelize.STRING
       },
-      todoId: {
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
-        allowNull: false,
-       
-      },
+      
       isCompleted: {
         type: Sequelize.BOOLEAN,
       },

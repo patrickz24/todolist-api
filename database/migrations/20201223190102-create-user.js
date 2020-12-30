@@ -7,7 +7,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
-      },
+      }, 
+    
       
       first_name: {
         allowNull: false,

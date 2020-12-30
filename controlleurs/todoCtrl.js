@@ -1,6 +1,7 @@
 const express = require("express");
 require("express-async-errors");
 const models = require("../database/models");
+const User = require("../database/models/user")
 
 
 const { OK, CREATED} = require("../helpers/status_codes");
@@ -11,7 +12,7 @@ module.exports = {
 
 console.log("addTodo");
     const { title} = req.body;
-    const userId = req.userId;
+    const userId= req.userId;
 
     if (
       (title === "")
@@ -23,13 +24,21 @@ console.log("addTodo");
     }
     console.log("adddddddd");
     const user = await models.User.findByPk(userId);
-    console.log("adddddddd");
-    const todos = await models.Todo.create({
-      userId: user.id,
-     title,
+    console.log(userId);
+  
+    const todos = await models.Todo.create( {
+   include :[{
+    model: User, attributes: ['id', 'last_name', 'email'] ,
+   }
+
+   ],
+     
+   userId:user.id,
+   title,
   
     });
-
+    console.log(userId);
+console.log(todos);
     return res.status(OK).json(todos);
   },
 
