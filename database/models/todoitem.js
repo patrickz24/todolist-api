@@ -13,25 +13,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   
   TodoItem.init({   
-      id: {
-    type: DataTypes.UUID,
-    primaryKey: true,
-    allowNull: false,
-    defaultValue: DataTypes.UUIDV4,
-    validate: {
-      notNull: true,
-      isUUID: 4,
-    },
-  },
+    
   todoId: {
-    type: DataTypes.UUID,
-    primaryKey: true,
-    allowNull: false,
-    defaultValue: DataTypes.UUIDV4,
-    validate: {
-      notNull: true,
-      isUUID: 4,
-    },
+    type: DataTypes.INTEGER,
+  
   },
  
     text: DataTypes.STRING,

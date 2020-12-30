@@ -7,9 +7,9 @@ module.exports = (sequelize, DataTypes) => {
       
       this.belongsToMany(models.User, {
         through: 'UserTodos',
-        otherKey: 'userId',
-        foreignKey: 'todoId',
         as: 'users',
+        foreignKey: 'todoId',
+       
        
       });
       this.hasMany(models.TodoItem, {
@@ -20,16 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Todo.init({   
-      id: {
-    type: DataTypes.UUID,
-    primaryKey: true,
-    allowNull: false,
-    defaultValue: DataTypes.UUIDV4,
-    validate: {
-      notNull: true,
-      isUUID: 4,
-    },
-  },
+    
   
     title: DataTypes.STRING,
  

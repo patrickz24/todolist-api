@@ -1,7 +1,7 @@
 const express = require("express");
 require("express-async-errors");
 const models = require("../database/models");
-const User = require("../database/models/user")
+const User = require("../database/models/user");
 
 
 const { OK, CREATED} = require("../helpers/status_codes");
@@ -11,7 +11,7 @@ module.exports = {
   addTodo: async function (req, res) {
 
 console.log("addTodo");
-    const { title} = req.body;
+    const { title, users} = req.body;
     const userId= req.userId;
 
     if (
@@ -39,40 +39,46 @@ console.log("addTodo");
     });
     console.log(userId);
 console.log(todos);
+if(users && users.length > 0){
+  todos.setUsers(users);
+}
     return res.status(OK).json(todos);
   },
 
 
-  getAllTodos: async function (req, res) {  
-    console.log(req.userId);
   
-    const userId = req.userId;
-    const user = await models.User.findByPk(userId);
- user.id = id;
-    const findTodo = await models.Todo.findAll({
-      where: { userId: req.userId },
-  
+  getAllTodos: async (req, res) => {
+    
+    const todos = await models.Todo.findAll({
+      include: [
+        {
+          model: models.User,
+          as: 'users',
+          through: { attributes: [] },
+        },
+      ],
     });
-   
-    return res.status(OK).json(findTodo);
+  console.log(todos);
+    return res.status(OK).json(todos);
   },
 
-  async fetchOne({ params, decoded }, res, next) {
-    try {
+fetchOne: async (req, res) => {
+    console.log(req.userId);
+    console.log (req.params.todoId)
       const myTodo = await models.Todo.findOne({
-        where: { id: params.todoId, userId: decoded.userId },
+        where: { id: req.params.todoId, userId: req.userId},
         include: [{
           model: models.TodoItem,
-          as: 'todoItems'
+          as: 'todoItems',
         }],
+        raw:true,
+       id,
+       userId,
+       title,
       });
-      if (!myTodo) {
-        return res.status(404).send({ error: 'Todo not found' });
-      }
-      return res.status(200).send(myTodo);
-    } catch (e) {
-      return next(new Error(e));
-    }
+   
+      return res.status(OK).send(myTodo);
+    
   },
 
   async update({ body, decoded, params }, res, next) {

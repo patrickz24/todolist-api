@@ -2,6 +2,7 @@ const express = require("express");
 require("express-async-errors");
 const bcrypt = require("bcrypt");
 const models = require("../database/models");
+const Todo = require("../database/models/todo");
 const jwtUtils = require("../utils/jwt.utils");
 const { OK, CREATED } = require("../helpers/status_codes");
 const {
@@ -10,6 +11,7 @@ const {
   ConflictError,
   ForbiddenError,
 } = require("../helpers/errors");
+const { post } = require("../apiRouter");
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const PASSWORD_REGEX = /^(?=.*\d).{4,8}$/;
@@ -57,6 +59,7 @@ module.exports = {
           password: bcryptedPassword,
        
         });
+       
         if (!newUser) {
           throw new ServerError(
             "Erreur Serveur",
@@ -81,7 +84,7 @@ module.exports = {
     }
   },
   signin: async function (req, res) {
-    const { email, password } = req.body;
+    const { email, password, todos } = req.body;
     if (email === "" || password === "") {
       throw new BadRequestError(
         "Mauvaise Requête",
@@ -103,7 +106,11 @@ module.exports = {
         "Accès refusé",
         "Le mot de passe est incorrect, veuillez recommencer."
       );
+    } 
+    if(todos && todos.length > 0){
+      userFound.setTodos(todos);
     }
+
 
     return res.status(OK).json({
       user: {
@@ -116,6 +123,21 @@ module.exports = {
       token: jwtUtils.generateTokenForUser(userFound),
     });
   },
+
+  getAllUsers: async (req, res) => {
+    
+      const users = await models.User.findAll({
+        include: [
+          {
+            model: models.Todo,
+            as: 'todos',
+            through: { attributes: [] },
+          },
+        ],
+      });
+  console.log(users);
+      return res.status(OK).json(users);
+    },
   getOneUser: async (req, res) => {
     const userId = req.params.id;
     const findUser = await models.User.findOne({
