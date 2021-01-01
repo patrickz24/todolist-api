@@ -26,14 +26,15 @@ apiRouter.route("/user/:id").delete(userCtrl.getDeleteUser);
 apiRouter.route('/todos').post(authentification, todoCtrl.addTodo);
 apiRouter.route('/todos').get( authentification, todoCtrl.getAllTodos);
 apiRouter.route('/todos/:todoId').get( authentification, todoCtrl.fetchOne);
-apiRouter.route('/todos/:todoId').put(authentification, todoCtrl.update);
-apiRouter.route('/todos/:todoId').delete(authentification, todoCtrl.delete);
+// apiRouter.route('/todos/:todoId').put(authentification, todoCtrl.update);
+// apiRouter.route('/todos/:todoId').delete(authentification, todoCtrl.delete);
 
 
 apiRouter.route('/todoItems').post(todoItemCtrl.create);
-apiRouter.route('/todos/:todoId/todoItems').get(todoItemCtrl.fetchAll); apiRouter.route('/todos/:todoItemId').get( todoItemCtrl.fetchOne);
-apiRouter.route('/todos/:todoItemId').put(todoItemCtrl.update);
-apiRouter.route('/todos/:todoItemId').delete(todoItemCtrl.delete); 
+apiRouter.route('/todos/:todoId/todoItems').get(authentification, todoItemCtrl.getAllTodoItems);
+apiRouter.route('/todoItems/:todoItemId').get( todoItemCtrl.fetchOne);
+// apiRouter.route('/todoItems/:todoItemId').put(todoItemCtrl.update);
+// apiRouter.route('/todoItems/:todoItemId').delete(todoItemCtrl.delete); 
 
   
 // apiRouter.route("/share").post(sendMailCtrl.sendContact);
