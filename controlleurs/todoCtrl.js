@@ -2,6 +2,7 @@ const express = require("express");
 require("express-async-errors");
 const models = require("../database/models");
 const User = require("../database/models/user");
+const TodoItem = require("../database/models/todoitem");
 
 
 const { OK, CREATED} = require("../helpers/status_codes");
@@ -48,36 +49,35 @@ if(users && users.length > 0){
 
   
   getAllTodos: async (req, res) => {
-    
-    const todos = await models.Todo.findAll({
-      include: [
-        {
-          model: models.User,
-          as: 'users',
-          through: { attributes: [] },
-        },
-      ],
-    });
-  console.log(todos);
-    return res.status(OK).json(todos);
-  },
-
-fetchOne: async (req, res) => {
-    console.log(req.userId);
-    console.log (req.params.todoId)
-      const myTodo = await models.Todo.findOne({
-        where: { id: req.params.todoId, userId: req.userId},
-        include: [{
+    const todos = await models.Todo.findAll({ 
+      include: [{
           model: models.TodoItem,
           as: 'todoItems',
         }],
-        raw:true,
-       id,
-       userId,
-       title,
-      });
-   
-      return res.status(OK).send(myTodo);
+     
+    });
+    return res.status(CREATED).json(todos);
+  },
+
+fetchOne: async ({params}, res) => {    
+      const myTodo = await models.Todo.findOne({
+        where: { id: params.todoId},
+        include: [
+          {
+            model: models.User,
+            as: 'users',
+            // through: { attributes: [] },
+          },
+        
+      {
+          model: models.TodoItem,
+          as: 'todoItems',
+        }],
+        raw :true,
+        attributes: ["id", "title"],
+     
+      });    
+      return res.status(CREATED).json(myTodo);
     
   },
 

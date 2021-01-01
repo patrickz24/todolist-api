@@ -14,13 +14,9 @@ module.exports = (sequelize, DataTypes) => {
   
   TodoItem.init({   
     
-  todoId: {
-    type: DataTypes.INTEGER,
-  
-  },
- 
-    text: DataTypes.STRING,
-    isCompleted: DataTypes.BOOLEAN
+  todoId:DataTypes.INTEGER,
+ text: DataTypes.STRING,
+ isCompleted: DataTypes.BOOLEAN
  
   }, {
     sequelize,

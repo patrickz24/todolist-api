@@ -8,12 +8,20 @@ module.exports = {
         type: Sequelize.INTEGER,
 
       },
+      todoId: {
+        type: Sequelize.INTEGER,
+        references: {model:'Todos', key: 'id'},
+        allowNull: false,
+      
+
+      },
       text: {
         type: Sequelize.STRING
       },
       
       isCompleted: {
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,

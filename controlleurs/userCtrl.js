@@ -142,6 +142,13 @@ module.exports = {
     const userId = req.params.id;
     const findUser = await models.User.findOne({
       where: { id: userId },
+      include: [
+        {
+          model: models.Todo,
+          as: 'todos',
+          through: { attributes: [] },
+        },
+      ],
       raw: true,
       attributes: ["first_name", "last_name", "email"],
     });
