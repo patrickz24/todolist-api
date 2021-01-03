@@ -18,14 +18,16 @@ apiRouter.route('/user/me').get( authentification,
       res.status(201).json(user);
     },
   );
-apiRouter.route("/users").get(userCtrl.getAllUsers);
-apiRouter.route("/user/:id").get(userCtrl.getOneUser);
-apiRouter.route("/user/:id").put(userCtrl.getUpdateUser);
-apiRouter.route("/user/:id").delete(userCtrl.getDeleteUser);
+// apiRouter.route("/users").get(userCtrl.getAllUsers);
+apiRouter.route("/user/:id").get(authentification, userCtrl.getAllTodoFromUser);
+// apiRouter.route("/user/:id").put(userCtrl.getUpdateUser);
+// apiRouter.route("/user/:id").delete(userCtrl.getDeleteUser);
 
 apiRouter.route('/todos').post(authentification, todoCtrl.addTodo);
-apiRouter.route('/todos').get( authentification, todoCtrl.getAllTodos);
-apiRouter.route('/todos/:todoId').get( authentification, todoCtrl.fetchOne);
+
+
+apiRouter.route('/todos').get(  todoCtrl.getAllTodos);
+apiRouter.route('/todos/:todoId').get(authentification, todoCtrl.getAllUserfromTodo);
 // apiRouter.route('/todos/:todoId').put(authentification, todoCtrl.update);
 // apiRouter.route('/todos/:todoId').delete(authentification, todoCtrl.delete);
 

@@ -1,8 +1,9 @@
 const jwtUtils = require("../utils/jwt.utils");
 
 module.exports= async (req, res, next)=>{
-    const heaerAuth= req.headers["authorization"];
-    const userId= jwtUtils.getUserId(heaerAuth, res);
+    const headerAuth= req.headers["authorization"];
+    console.log(headerAuth);
+    const userId= jwtUtils.getUserId(headerAuth, res);
     
         
             if (userId < 0) {

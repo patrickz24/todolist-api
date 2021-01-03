@@ -11,7 +11,8 @@ const {
   ConflictError,
   ForbiddenError,
 } = require("../helpers/errors");
-const { post } = require("../apiRouter");
+
+
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const PASSWORD_REGEX = /^(?=.*\d).{4,8}$/;
@@ -19,7 +20,7 @@ const FIRSTNAME_REGEX = /^[a-zA-Z]{1,}$/;
 
 module.exports = {
   signup: async function (req, res) {
-    console.log("caca");
+  
     const { first_name, last_name, email, password} = req.body;
 
     if (first_name === "" || last_name === "") {
@@ -42,14 +43,13 @@ module.exports = {
         "Mot de passe invalide (doit avoir une longueur de 4 à 8 caractères et inclure au moins un chiffre), veuillez recommencer."
       );
     }
-    console.log("capasse par la!");
+ 
 
     const userFound = await models.User.findOne({
      
       attributes: ["email"],
       where: { email: email },
     });
-    console.log("capasse par la!");
     if (!userFound) {
       bcrypt.hash(password, 5, async (err, bcryptedPassword) => {
         const newUser = await models.User.create({
@@ -75,7 +75,7 @@ module.exports = {
         }
       });
     } else {
-      console.log("hello");
+   
       const error = new ConflictError(
         "Conflit",
         "Cet utilisateur existe déjà."
@@ -83,8 +83,9 @@ module.exports = {
       throw error;
     }
   },
+
   signin: async function (req, res) {
-    const { email, password, todos } = req.body;
+    const { email, password } = req.body;
     if (email === "" || password === "") {
       throw new BadRequestError(
         "Mauvaise Requête",
@@ -107,9 +108,7 @@ module.exports = {
         "Le mot de passe est incorrect, veuillez recommencer."
       );
     } 
-    if(todos && todos.length > 0){
-      userFound.setTodos(todos);
-    }
+  
 
 
     return res.status(OK).json({
@@ -138,23 +137,31 @@ module.exports = {
   console.log(users);
       return res.status(OK).json(users);
     },
-  getOneUser: async (req, res) => {
+
+
+
+  getAllTodoFromUser: async (req, res) => {
     const userId = req.params.id;
-    const findUser = await models.User.findOne({
+
+    const users = await models.User.findOne({
       where: { id: userId },
       include: [
         {
           model: models.Todo,
           as: 'todos',
           through: { attributes: [] },
-        },
-      ],
-      raw: true,
-      attributes: ["first_name", "last_name", "email"],
+        }], 
     });
-    console.log( "cest findUser", findUser);
-    return res.status(CREATED).json(findUser);
+console.log(users);
+   
+
+   
+    return res.status(CREATED).json(users);
   },
+
+
+
+
 
   getUpdateUser: async function (req, res) {
     const { first_name, last_name, email, password } = req.body;
@@ -211,5 +218,8 @@ module.exports = {
       return res.status(NOT_FOUND).json({ err: "profil deja supprimé" });
     }
   },
+ 
+
+
 
 };

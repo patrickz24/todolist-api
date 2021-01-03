@@ -11,8 +11,8 @@ const { BadRequestError}= require("../helpers/errors");
 module.exports = {
   addTodo: async function (req, res) {
 
-    const { title, users} = req.body;
-    const userId= req.userId;
+    const {title} = req.body;
+    const {userId} = req;
 
     if (
       (title === "")
@@ -22,9 +22,8 @@ module.exports = {
         "Le champ description n'est pas renseigné, veuillez recommencer."
       );
     }
+  
  
-    const user = await models.User.findByPk(userId);
-
   
     const todos = await models.Todo.create( {
    include :[{
@@ -32,36 +31,64 @@ module.exports = {
    }
 
    ],
-     
-   userId:user.id,
    title,
   
     });
-  
-if(users && users.length > 0){
-  todos.setUsers(users);
-}
+  await models.UserTodo.create({
+    userId,
+    todoId:todos.id,
+  })
+
     return res.status(OK).json(todos);
   },
 
 
   
   getAllTodos: async (req, res) => {
+    
     const todos = await models.Todo.findAll({ 
       include: [
         {
           model: models.User,
           as: 'users',
-        
+          through: { attributes: [] },
         },{
           model: models.TodoItem,
           as: 'todoItems',
+          
         }],
      
     });
     
     return res.status(CREATED).json(todos);
   },
+
+
+
+
+
+
+ getAllUserfromTodo: async (req, res) => {
+  const todoId = req.params.todoId;
+  const todos = await models.Todo.findOne({ 
+where: {id: todoId},
+    include: [
+      {
+        model: models.User,
+        as: 'users',
+        through: { attributes: [] },
+      
+      },{
+        model: models.TodoItem,
+        as: 'todoItems',
+      }],
+   
+  });
+  
+  return res.status(CREATED).json(todos);
+},
+
+
 
 fetchOne: async ({params}, res) => {    
       const myTodo = await models.Todo.findOne({
