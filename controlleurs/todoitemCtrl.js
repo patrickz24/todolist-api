@@ -3,13 +3,11 @@ require("express-async-errors");
 const models = require("../database/models");
 const { OK, CREATED} = require("../helpers/status_codes");
 const { BadRequestError}= require("../helpers/errors");
-const {TodoItem, Todo, User} = models;
+const {TodoItem, Todo} = models;
 module.exports = {
 
-    create: async function(req, res) {
-  
-      const { text , todoId } = req.body;
-      // Validation
+    create: async function(req, res) {  
+      const { text , todoId } = req.body;      
       if (text === "" ) {
         throw new BadRequestError(
           "Mauvaise Requête",
@@ -28,10 +26,7 @@ module.exports = {
   },
 
   getAllTodoItems: async function (req, res) {
-
-      const { todoId } = req.params;
-   
-      // Validation
+      const { todoId } = req.params;      
       if (todoId === "") {
         throw new BadRequestError(
           "Mauvaise Requête",
@@ -50,32 +45,10 @@ module.exports = {
   
   },
 
-  async fetchOne(req, res) {
-    
-      const { todoItemId } = req.params;
-      // Validation
-      if (todoItemId === "") {
-        throw new BadRequestError(
-          "Mauvaise Requête",
-          "Nous avons besoin de todoId!"
-        );
-      }
-      const items = await TodoItem.findOne({
-        where: { id: todoItemId },
-        include: [{
-          model: Todo,
-          as: 'todo'
-        }],
-      });
-      return res.status(200).send(items);
-  
-  },
-
-update: async (req, res) => {
-    
+update: async (req, res) => {    
       const { text, isCompleted } = req.body;
       const  id = req.params.todoItemId;
-      // Validation
+      
       if (
         (!id)
       ) {
@@ -108,24 +81,6 @@ update: async (req, res) => {
       );
       return res.status(OK).json(updatedItem[1]);
       
-  },
-
-  // async delete(req, res, next) {
-  //   try {
-  //     const { todoItemId } = req.params;
-  //     // Validation
-  //     if (!todoItemId) { return res.status(400).send({ error: 'todoItemId is required' }); }
-  //     const item = await TodoItem.findOne({
-  //       where: { id: todoItemId },
-  //     });
-  //     if (!item) {
-  //       return res.status(404).send({ error: 'Item does not exist' });
-  //     }
-  //     await item.destroy();
-  //     return res.status(200).send({});
-  //   } catch (e) {
-  //     return next(new Error(e));
-  //   }
-  // }
+  },  
 };
 
