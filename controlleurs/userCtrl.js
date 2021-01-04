@@ -141,7 +141,8 @@ module.exports = {
 
 
   getAllTodoFromUser: async (req, res) => {
-    const userId = req.params.id;
+    const {userId} = req;
+    
 
     const users = await models.User.findOne({
       where: { id: userId },

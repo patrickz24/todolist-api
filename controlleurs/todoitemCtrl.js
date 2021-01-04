@@ -8,7 +8,7 @@ module.exports = {
 
     create: async function(req, res) {
   
-      const { text, todoId } = req.body;
+      const { text , todoId } = req.body;
       // Validation
       if (text === "" ) {
         throw new BadRequestError(
@@ -71,31 +71,44 @@ module.exports = {
   
   },
 
-  // async update(req, res, next) {
-  //   try {
-  //     const { text, isCompleted } = req.body;
-  //     const { todoItemId } = req.params;
-  //     // Validation
-  //     if (!todoItemId) { return res.status(400).send({ error: 'todoItemId is required' }); }
-  //     const item = await TodoItem.findOne({
-  //       where: { id: todoItemId },
-  //     });
-  //     if (!item) {
-  //       return res.status(404).send({ error: 'Item does not exist' });
-  //     }
-  //     const updatedItem = await TodoItem.update(
-  //       { text: text || item.text, isCompleted },
-  //       {
-  //         where: { id: req.params.todoItemId },
-  //         returning: true,
-  //         plain: true,
-  //       }
-  //     );
-  //     return res.status(200).send(updatedItem[1]);
-  //   } catch (e) {
-  //     return next(new Error(e));
-  //   }
-  // },
+update: async (req, res) => {
+    
+      const { text, isCompleted } = req.body;
+      const  id = req.params.todoItemId;
+      // Validation
+      if (
+        (!id)
+      ) {
+        throw new BadRequestError(
+          "Mauvaise Requête",
+          "On a besoin du todoItemId"
+        );
+      }
+      
+      const item = await TodoItem.findOne({
+        where: { id: id },
+      });
+
+      if (
+        (!item)
+      ) {
+        throw new BadRequestError(
+          "Mauvaise Requête",
+          "La tâche n' existe pas"
+        );
+      }
+
+      const updatedItem = await TodoItem.update(
+        { text: text || item.text, isCompleted },
+        {
+          where: { id: id},
+          returning: true,
+          plain: true,
+        }
+      );
+      return res.status(OK).json(updatedItem[1]);
+      
+  },
 
   // async delete(req, res, next) {
   //   try {

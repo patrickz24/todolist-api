@@ -44,25 +44,40 @@ module.exports = {
 
 
   
-  getAllTodos: async (req, res) => {
-    
-    const todos = await models.Todo.findAll({ 
-      include: [
-        {
-          model: models.User,
-          as: 'users',
-          through: { attributes: [] },
-        },{
-          model: models.TodoItem,
-          as: 'todoItems',
-          
-        }],
-     
-    });
-    
-    return res.status(CREATED).json(todos);
-  },
+ 
 
+
+  getAllTodos: async (req, res) => {
+
+    const findTodoAllTodoId = await models.UserTodo.findAll({
+      where: {userId: req.userId},
+    })
+   
+   const todoId = findTodoAllTodoId.map((todo)=> {
+    return todo.id;
+   })
+   console.log(todoId);
+   
+     
+       const todos = await models.Todo.findAll({ 
+         where: {id: todoId},
+     
+         include: [
+           {
+             model: models.User,
+             as: 'users',
+             through: { attributes: [] },
+           },{
+             model: models.TodoItem,
+             as: 'todoItems',
+             
+           }],
+        
+       });
+     
+       
+       return res.status(CREATED).json(todos);
+     },
 
 
 
@@ -108,35 +123,41 @@ fetchOne: async ({params}, res) => {
   },
 
 
-  // async update({ body, decoded, params }, res, next) {
-  //   try {
-  //     const todo = await Todo.findOne({ where: { id: params.todoId, userId: decoded.userId } });
-  //     if (!todo) {
-  //       return res.status(400).send({ error: 'Wrong todo id' });
-  //     }
-  //     const updatedTodo = await models.Todo.update({ title: body.title || todo.title },
-  //       {
-  //         where: { id: todo.id },
-  //         returning: true,
-  //         plain: true
-  //       },);
-  //     return res.status(200).send(updatedTodo[1]);
-  //   } catch (e) {
-  //     return next(new Error(e));
-  //   }
-  // },
+//  update:   async ({ body, userId, params }, res) => {
+    
+//       const todo = await Todo.findOne({ where: { id: params.todoId, userId: userId } });
+//       if (
+//         (!todo)
+//       ) {
+//         throw new BadRequestError(
+//           "Mauvaise Requête",
+//           "Cette liste n'existe pas"
+//         );
+//       }
+//       const updatedTodo = await models.Todo.update({ title: body.title || todo.title },
+//         {
+//           where: { id: todo.id },
+//           returning: true,
+//           plain: true
+//         },);
+//       return res.status(OK).json(updatedTodo[1]);
+   
+//   },
 
-  // async delete({ params, decoded }, res, next) {
-  //   try {
-  //     const todo = await models.Todo.findOne({ where: { id: params.todoId, userId: decoded.userId } });
-  //     if (!todo) {
-  //       return res.status(400).send({ error: 'Wrong todo id' });
-  //     }
-  //     await todo.destroy();
-  //     return res.status(200).send({});
-  //   } catch (e) {
-  //     return next(new Error(e));
-  //   }
-  // }
+  delete: async (req, res) => {
+    
+    const { todoId} = req.params;
+      const todo = await models.Todo.findOne({ where: { id: todoId}});
+      if (
+        (!todo)
+      ) {
+        throw new BadRequestError(
+          "Mauvaise Requête",
+          "Cette liste n'existe pas"
+        );
+      }
+      await todo.destroy();
+      return res.status(OK).json({});
+    },
 };
 
